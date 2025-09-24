@@ -11,9 +11,20 @@ public class HomeController : Controller
     {
 
     }
-    public IActionResult Index()
+    public IActionResult Index(string searchString) 
     {
-        return View(Repository.Products);
+        //flitreleme için linq kullanıldı artık url den gelen searchString e göre filtreleme yapılacak
+        
+            // Repository’den ürünleri al
+        var Products = Repository.Products;
+        // Eğer searchString boş değilse filtre uygula
+        if (!String.IsNullOrEmpty(searchString))
+        {
+            ViewBag.SearchString = searchString; // Arama kutusunu doldurmak için
+            Products = Products.Where(p => p.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase)).ToList();
+        }
+        // Filtrelenmiş listeyi view’a gönder
+        return View(Products);
     }
 
     public IActionResult Privacy()
