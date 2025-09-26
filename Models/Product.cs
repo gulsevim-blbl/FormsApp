@@ -12,13 +12,13 @@ namespace FormsApp.Models
         [Required]
         [StringLength(20, MinimumLength = 3, ErrorMessage = "Ürün adı en az 3 en fazla 100 karakter olmalıdır.")] //en az 3 en fazla 100 karakter olabilir
         [Display(Name = "Ürün Adı")]
-        public string? Name { get; set; }
+        public string Name { get; set; } = null!; //bu şekilde de null olamaz demiş oluruz.
         // public string Name { get; set; } = string.Empty; //string? ile aynı anlama geliyor.
         [Display(Name = "Fiyat")]
         [Required, Range(1, 100000, ErrorMessage = "Fiyat 1 ile 10000 arasında olmalıdır.")] //fiyat 1 ile 10000 arasında olmalı
         public decimal? Price { get; set; }
         [Display(Name = "Resim")]
-        [Required]
+
         public string? Image { get; set; } = string.Empty;
 
         public bool IsActive { get; set; }
@@ -26,5 +26,8 @@ namespace FormsApp.Models
 
         [Required]
         public int? CategoryId { get; set; }
+
+        // public IFormFile ImageFile { get; set; } şeklinde de alabiliri<.
+        
     }
 }

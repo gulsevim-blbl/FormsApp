@@ -59,12 +59,35 @@ public class HomeController : Controller
     }
 
     [HttpPost]
-    public IActionResult Create(Product model)
+    public async Task<IActionResult> Create(Product model, IFormFile imageFile) //dosya yükleme için IFormFile kullanılır bu paremetreyi product içerisine de alabiliriz.
+
     //public IActionResult Create([Bind["Name,"Price"] Product model) böyle yaparsak sadece name ve price ı alır diğerlerini almaz 1.yol
     {
+        var allowedExtensions = new[] { ".jpg", ".jpeg", ".png" }; //izin verilen dosya uzantıları
+        var extensions = Path.GetExtension(imageFile.FileName); //dosyanın uzantısını alırız abc.jpg
+        var randomFileName = string.Format($"{Guid.NewGuid().ToString()}{extensions}"); //dosya ismini random yaparız
+        var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/img", randomFileName); //dosyanın kaydedileceği yer
+
+        if (imageFile != null)
+        {
+            if (!allowedExtensions.Contains(extensions)) //dosya uzantısı izin verilenler arasında mı
+            {
+                ModelState.AddModelError("Image", "Geçersiz dosya türü. Sadece .jpg, .jpeg, .png,  uzantılı dosyalar yüklenebilir.");
+            }
+            else if (imageFile.Length > 2 * 1024 * 1024) //dosya boyutu 2MB den büyük mü
+            {
+                ModelState.AddModelError("Image", "Dosya boyutu 2MB'den büyük olamaz.");
+            }
+        }
+
         //Hataları Yazdırmak için
         if (ModelState.IsValid)
         {
+            using (var stream = new FileStream(path, FileMode.Create)) //dosyayı oluşturur
+            {
+                await imageFile.CopyToAsync(stream); //dosyayı kopyalar
+            }
+            model.Image = randomFileName; //ürünün image özelliğine dosya ismini atarız
             model.ProductId = Repository.Products.Count + 1;
             Repository.CreateProduct(model); //Repository deki CreateProduct methodunu çağırdık formdan gelen bilgileri eklemek için
                                              // return View(); 
