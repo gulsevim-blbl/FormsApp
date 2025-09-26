@@ -50,7 +50,7 @@ public class HomeController : Controller
         };
         // Filtrelenmiş listeyi view’a gönder
         return View(model);
-    }
+    }    
     [HttpGet]
     public IActionResult Create()
     {
@@ -58,10 +58,22 @@ public class HomeController : Controller
         return View();
     }
 
-     [HttpPost]
+    [HttpPost]
     public IActionResult Create(Product model)
+    //public IActionResult Create([Bind["Name,"Price"] Product model) böyle yaparsak sadece name ve price ı alır diğerlerini almaz 1.yol
     {
-        return View();
+        //Hataları Yazdırmak için
+        if (ModelState.IsValid)
+        {
+            model.ProductId = Repository.Products.Count + 1;
+            Repository.CreateProduct(model); //Repository deki CreateProduct methodunu çağırdık formdan gelen bilgileri eklemek için
+                                             // return View(); 
+                                             //tekrar create sayfasına yönlendirir Form tekrar kullanıcının karşısına gelir bunu kapatırız
+            return RedirectToAction("Index"); //farklı bir methodun çalışmasını sağlar. ındex methoduna yönlendirir burada.
+        }
+        ViewBag.Categories = new SelectList(Repository.Categories,"CategoryId","Name"); 
+        return View(model); //hata varsa tekrar formu doldurması için modeli geri gönderiyoruz
+
     }
 
 }

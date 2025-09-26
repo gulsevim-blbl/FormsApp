@@ -31,6 +31,11 @@ namespace FormsApp.Models
             }
         }
 
+        //Form üzerinden gelen bilgileri Repostory ye gönderebilmek için
+        public static void CreateProduct(Product entity)
+        {
+            _products.Add(entity);
+        }
         public static List<Category> Categories
         {
             get
