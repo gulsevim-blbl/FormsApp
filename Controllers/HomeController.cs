@@ -144,5 +144,37 @@ namespace FormsApp.Controllers
             ViewBag.Categories = new SelectList(Repository.Categories, "CategoryId", "Name");
             return View(model);
         }
+
+
+        public IActionResult Delete(int? id) //url içinden id parametresini alırız 
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+            var entity = Repository.Products.FirstOrDefault(p => p.ProductId == id);
+            if (entity == null)
+            {
+                return NotFound();
+            }
+            return View("DeleteConfirm", entity);
+        }
+
+        [HttpPost]
+        public IActionResult Delete(int id, int ProductId)
+        {
+            if (id != ProductId)
+            {
+                return NotFound();
+            }
+            var entity = Repository.Products.FirstOrDefault(p => ProductId == ProductId);
+            if (entity == null)
+            {
+                return NotFound();
+            }
+            Repository.DeleteProduct(entity);
+            return RedirectToAction("Index");
+        }
+
     }
 }
