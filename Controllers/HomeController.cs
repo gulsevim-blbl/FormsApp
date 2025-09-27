@@ -167,7 +167,7 @@ namespace FormsApp.Controllers
             {
                 return NotFound();
             }
-            var entity = Repository.Products.FirstOrDefault(p => ProductId == ProductId);
+            var entity = Repository.Products.FirstOrDefault(p => p.ProductId == ProductId);
             if (entity == null)
             {
                 return NotFound();
@@ -175,6 +175,17 @@ namespace FormsApp.Controllers
             Repository.DeleteProduct(entity);
             return RedirectToAction("Index");
         }
+        [HttpPost]
+        public IActionResult EditProducts(List<Product> Products)
+        {
+            foreach (var product in Products)
+            {
+                Repository.EditIsActive(product);
+            }
+            return RedirectToAction("Index");
+        }
+
+
 
     }
 }

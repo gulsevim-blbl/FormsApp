@@ -1,5 +1,4 @@
 ﻿@model ProductViewModel
-    <!--IEnumerable kullanarak bir koleksiyon alıyoruz.List yerine kullandık çünkü listeye ekleme çıkarma yapmayacağız sadece görüntüleyeceğiz.-->
 @{
     ViewData["Title"] = "Home Page";
 }
@@ -17,40 +16,48 @@
                     </select>
                 </div>
                 <div class="col-md-1">
-                    <button class="btn btn-primary" type="submit">Flitrele</button>
+                    <button class="btn btn-primary" type="submit">Filtrele</button>
                 </div>
             </div>
         </div>
     </form>
 </div>
 
-<table class="table table-bordered table-striped table-hover">
-    <thead>
-        <tr>
-            <th style="width: 100px;">@Html.DisplayNameFor(m => m.Products[0].ProductId)</th>
-            <th style="width: 100px;">@Html.DisplayNameFor(m => m.Products[0].Image)</th>
-            <th>@Html.DisplayNameFor(m => m.Products[0].Name)</th>
-            <th style="width: 100px;">@Html.DisplayNameFor(m => m.Products[0].Price)</th>
-            <th style="width: 130px;"></th>
-        </tr>
-    </thead>
-    <tbody>
-            @foreach(var prd in @Model.Products){
+<form asp-action="EditProducts" method="post">
+    <table class="table table-bordered table-striped table-hover">
+        <thead>
+            <tr>
+                <th style="width: 100px;">@Html.DisplayNameFor(m => m.Products[0].ProductId)</th>
+                <th style="width: 100px;">@Html.DisplayNameFor(m => m.Products[0].Image)</th>
+                <th>@Html.DisplayNameFor(m => m.Products[0].Name)</th>
+                <th style="width: 100px;">@Html.DisplayNameFor(m => m.Products[0].Price)</th>
+                <th>Aktif mi?</th>
+                <th style="width: 130px;"></th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (var i = 0; i < Model.Products.Count; i++)
+            {
                 <tr>
-                    <td>@prd.ProductId</td>
                     <td>
-                        <img src="~/img/@prd.Image" class="img-fluid" alt="">
-
+                        @Model.Products[i].ProductId
+                        <input type="hidden" asp-for="Products[i].ProductId" />
                     </td>
-                    <td>@prd.Name</td>
-                    <td>@prd.Price</td>
                     <td>
-                        <a href="/Home/Edit/@prd.ProductId" class="btn btn-sm btn-primary">Edit</a>
-                        <a href="/Home/Delete/@prd.ProductId" class="btn btn-sm btn-danger">Delete</a>
-
+                        <img src="~/img/@Model.Products[i].Image" class="img-fluid" alt="">
+                    </td>
+                    <td>@Model.Products[i].Name</td>
+                    <td>@Model.Products[i].Price</td>
+                    <td>
+                        <input type="checkbox" asp-for="Products[i].IsActive" />
+                    </td>
+                    <td>
+                        <a href="/Home/Edit/@Model.Products[i].ProductId" class="btn btn-sm btn-primary">Edit</a>
+                        <a href="/Home/Delete/@Model.Products[i].ProductId" class="btn btn-sm btn-danger">Delete</a>
                     </td>
                 </tr>
             }
-    </tbody>
-
-</table>
+        </tbody>
+    </table>
+    <button type="submit" class="btn btn-primary">Kaydet</button>
+</form>
